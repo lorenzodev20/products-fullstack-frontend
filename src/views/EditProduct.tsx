@@ -5,7 +5,10 @@ import type { Product } from "../types";
 import ProductForm from "../components/ProductForm";
 
 export async function loader({ params }: LoaderFunctionArgs) {
-    const product = await getProductById(params.id);
+    if (!params.id) {
+        throw new Error("Id Not Found");
+    }
+    const product = await getProductById(+params.id);
     if (!product) {
         throw new Error('Not found!');
     }
@@ -23,8 +26,12 @@ export async function action({ request, params }: ActionFunctionArgs) {
         if (error.length) {
             return error;
         }
+        
+        if(!params.id){
+            throw new Error("Id Not Found");
+        }
 
-        await updateProduct(data, params.id);
+        await updateProduct(data, +params.id);
 
         return redirect('/');
     } catch (error: any) {

@@ -9,7 +9,10 @@ type ProductDetailProps = {
 
 export async function action({ params }: ActionFunctionArgs) {
     try {
-        await deleteProduct(params.id);
+        if (!params.id) {
+            throw new Error("Id Not Found");
+        }
+        await deleteProduct(+params.id);
         return redirect('/');
     } catch (error) {
         console.error(error);

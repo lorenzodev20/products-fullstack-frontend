@@ -11,7 +11,10 @@ export async function loader() {
 export async function action({ request }: ActionFunctionArgs) {
   const data = Object.fromEntries(await request.formData())
   const availability = data.availability as string
-  await updateAvailability(data.id, !toBoolean(availability))
+  if (!data.id) {
+    throw new Error("Id Not Found");
+  }
+  await updateAvailability(+data.id, !toBoolean(availability))
   return {}
 }
 
